@@ -60,6 +60,7 @@ public class AzarasiController : MonoBehaviour
     void OnCollisionEnter2D(Collision2D collision)
     {
         if(isDead)return;
+        Camera.main.SendMessage("Clash");
         isDead = true;     
     }
 

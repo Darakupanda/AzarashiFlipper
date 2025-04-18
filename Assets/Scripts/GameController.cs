@@ -2,9 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
+using System.Runtime.InteropServices;
+using Unity.VisualScripting;
 
 public class GameController : MonoBehaviour
 {
+    public static GameController Instance{get; private set;}
     enum State{
         Ready,
         Play,
@@ -12,13 +16,21 @@ public class GameController : MonoBehaviour
     }
 
     State state;
+    int score;
 
     public AzarasiController azarashi;
-    public GameObject blocks;
+    public GameObject blocks; 
+    public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI stateText;
 
     void Start()
     {
         Ready();
+    }
+
+    void Awake()
+    {
+        Instance = this;
     }
 
     void Ready(){
@@ -26,6 +38,10 @@ public class GameController : MonoBehaviour
 
         azarashi.SetSteerActive(false);
         blocks.SetActive(false);
+
+        scoreText.text = $"Score : 0";
+        stateText.gameObject.SetActive(true);
+        stateText.text = "Ready?";
     }
 
     void GameStart(){
@@ -35,6 +51,9 @@ public class GameController : MonoBehaviour
         blocks.SetActive(true);
 
         azarashi.Flap();
+
+        stateText.gameObject.SetActive(false);
+        stateText.text = " ";
     }
 
     void GameOver(){
@@ -42,6 +61,9 @@ public class GameController : MonoBehaviour
 
         ScrollObject[] scrollObjects = FindObjectsOfType<ScrollObject>();
         foreach(ScrollObject so in scrollObjects) so.enabled = false;
+
+        stateText.gameObject.SetActive(true);
+        stateText.text = "GameOver";
     }
 
     void Reload(){
@@ -62,5 +84,10 @@ public class GameController : MonoBehaviour
                 if(Input.GetButtonDown("Fire1")) Reload();
                 break;
         }   
+    }
+
+    public void IncreaseScore(){
+        score++;
+        scoreText.text = $"Score : {score}";
     }
 }
